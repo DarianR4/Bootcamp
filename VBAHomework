@@ -1,0 +1,91 @@
+Sub annualanalysis()
+    'set variables and values
+Dim current As Worksheet
+For Each current In ThisWorkbook.Worksheets
+
+
+ 
+    Dim ticker As String
+
+    Dim ychange As Double
+
+    Dim pchange As Integer
+
+    Dim tsv As Double
+        tsv = 0
+    
+    Dim summary As Integer
+        summary = 2
+    
+    Dim firstopen As Double, lastclose As Double
+        firstopen = 0
+        lastclose = 0
+    
+    'Make 4 new title columns for Ticker9, Yearly Change, Percent Change, Total Stock Volume
+    current.Cells(1, 9).Value = "Ticker"
+    current.Cells(1, 10).Value = "Yearly Change"
+    current.Cells(1, 11).Value = "Percent Change"
+    current.Cells(1, 12).Value = "Total Stock Volume"
+    
+    current.Cells(1, 16).Value = "Ticker"
+    current.Cells(1, 17).Value = "Value"
+    current.Cells(2, 15).Value = "Greatest % Increase"
+    current.Cells(3, 15).Value = "Greatest % Decrease"
+    current.Cells(4, 15).Value = "Greateset Total Volume"
+
+    'loop through all tickers in the respective column
+    For i = 2 To 70926
+     'to take the firstopen number from colum C/3
+            If current.Cells(i - 1, 1).Value <> current.Cells(i, 1).Value Then
+                    firstopen = current.Cells(i, 3).Value
+        'run if statement to add tickers to Column I, when the ticker changes
+                ElseIf current.Cells(i + 1, 1).Value <> current.Cells(i, 1).Value Then
+        'identify ticker
+                    ticker = current.Cells(i, 1).Value
+                    
+        'take lastclose number from column F/6
+                    lastopen = current.Cells(i, 6).Value
+                    
+         'take numbers from column G/7 and add them up for placing in column L
+                    tsv = tsv + current.Cells(i, 7).Value
+         
+    'print ticker column
+                current.Cells(summary, 9).Value = ticker
+    'print total column
+                current.Cells(summary, 12).Value = tsv
+    'print yearly change and lighten
+                current.Cells(summary, 13).Value = firstopen
+                    current.Cells(summary, 13).Font.ColorIndex = 15
+                current.Cells(summary, 14).Value = lastopen
+                    current.Cells(summary, 14).Font.ColorIndex = 15
+                current.Cells(summary, 10).Value = current.Cells(summary, 14).Value - current.Cells(summary, 13).Value
+                
+               
+    'print yearly percentage
+                current.Cells(summary, 11).Value = (current.Cells(summary, 10).Value / current.Cells(summary, 13).Value)
+                current.Cells(summary, 11).NumberFormat = "0.00%"
+                    
+                summary = summary + 1
+                    
+                tsv = 0
+                
+          
+          
+          
+            
+    'color yearly growht colum for positive and negative growth
+                ElseIf current.Cells(summary, 10).Value >= 0 Then
+                    current.Cells(summary, 10).Interior.ColorIndex = 4
+                ElseIf current.Cells(summary, 10).Value < 0 Then
+                    current.Cells(summary, 10).Interior.ColorIndex = 3
+                        
+                Else
+               'reset the total counter
+                tsv = tsv + current.Cells(i, 7).Value
+                
+            End If
+         Next i
+
+Next current
+
+End Sub
